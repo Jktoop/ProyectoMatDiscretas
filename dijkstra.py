@@ -53,3 +53,19 @@ def dijkstra(grafo, origen):
                 anteriores[vecino] = ciudad_actual
     
     return distancias, anteriores
+
+def obtener_ruta(anteriores, origen, destino):
+    ruta = []
+    ciudad = destino
+    
+    while ciudad is not None:
+        ruta.append(ciudad)
+        ciudad = anteriores[ciudad]
+    
+    ruta.reverse()
+    
+    if not ruta or ruta[0] != origen:
+        return[]
+    
+    return ruta
+
