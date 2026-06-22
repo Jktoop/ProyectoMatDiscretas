@@ -38,7 +38,7 @@ ProyectoMatDisrcetas
 
 ### 1. Ejecutar la aplicación
 
-python main.py
+python Main.py
 
 ### 2. Uso de la interfaz
 1. Seleccionar la ciudad de origen en el menú.
