@@ -97,3 +97,50 @@ def dibujar_grafo(ruta_optima=None):
     ax.axis("off")
     fig.tight_layout()
     lienzo.draw()
+
+    # mostrar el resultado en el cuadro de texto
+
+def mostrar_resultado(origen, destino, ruta, costo):
+    texto_resultado.config(state=tk.NORMAL)
+    texto_resultado.delete("1.0", tk.END)
+
+    lineas = [
+        f"Origen  : {origen}",
+        f"Destino : {destino}",
+        "-" * 28,
+        "Ruta optima:",
+    ]
+    for i, ciudad in enumerate(ruta):
+        flecha = "  →" if i < len(ruta) - 1 else ""
+        lineas.append(f"  {ciudad}{flecha}")
+
+    lineas += [
+        "-" * 28,
+        f"Costo total : {costo} km",
+        f"Tramos      : {len(ruta) - 1}",
+    ]
+
+    texto_resultado.insert(tk.END, "\n".join(lineas))
+    texto_resultado.config(state=tk.DISABLED)
+
+# acción del boton calcular
+
+def calcular_ruta():
+    origen  = combo_origen.get()
+    destino = combo_destino.get()
+
+    if origen == destino:
+        messagebox.showwarning("Advertencia",
+                               "El origen y el destino deben ser ciudades distintas.")
+        return
+
+    distancias, anteriores = dijkstra(grafo, origen)
+    ruta  = obtener_ruta(anteriores, origen, destino)
+    costo = distancias[destino]
+
+    if not ruta or costo == float('inf'):
+        messagebox.showerror("Error", "No existe ruta entre esas ciudades.")
+        return
+
+    mostrar_resultado(origen, destino, ruta, costo)
+    dibujar_grafo(ruta_optima=ruta)
