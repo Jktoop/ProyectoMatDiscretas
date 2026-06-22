@@ -29,11 +29,11 @@ Implementando a mano sin el uso de librerías externas, en cada itineracion se r
 ## Estructura del repositorio
 
 ProyectoMatDisrcetas
--main.py        # Aplicación con interfaz gráfica
--dikstra.py     # Implementación del algoritmo de Dijkstra
--ciudades.py    # Datos del grafo (ciudades y conexiones)
--README.md      # Este archivo
-
+-Main.py          # Aplicación con interfaz gráfica
+-dijkstra.py       # Implementación del algoritmo de Dijkstra
+-ciudades.py        # Datos del grafo (ciudades y conexiones)
+-README.md            # Este archivo
+-requerimientos.txt     # Dependencias del proyecto
 ## Instruciones de ejecución
 
 ### 1. Ejecutar la aplicación
