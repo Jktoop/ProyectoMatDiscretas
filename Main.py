@@ -144,3 +144,96 @@ def calcular_ruta():
 
     mostrar_resultado(origen, destino, ruta, costo)
     dibujar_grafo(ruta_optima=ruta)
+    
+    # Construir ventana prinicpal
+def crear_ventana():
+    global combo_origen, combo_destino, texto_resultado
+    global lienzo, fig, ax, grafo
+    
+    grafo = construir_grafo(CIUDADES, CONEXIONES)
+    
+    ventana = tk.Tk()
+    ventana.title("Ruta optimas entre Ciudades Europeas")
+    ventana.geometry("1100x680")
+    ventana.configure(bg="#1e1e2e")
+    
+    # panel izquierda (controles)
+    panel_izq = tk.Frame(ventana, bg="#1e1e2e", width=250)
+    panel_izq.pack(side=tk.LEFT, fill=tk.Y, padx=16, pady=16)
+    panel_izq.pack_propagate(False)
+    
+    tk.Label(panel_izq, text="Rutas Optimas",
+             font=("Helvetica", 15, "bold"),
+             bg="#1e1e2e", fg="#cdd6f4").pack(padx=(0, 2))
+    
+    tk.Label(panel_izq, text="Ciudades Europeas | Dijkstra",
+             font=("Helvetica", 9),
+             bg="#1e1e2e", fg="#6c7086").pack(pady=(0,18))
+    
+    # Origen
+    tk.Label(panel_izq, text="Ciudad de Origen",
+             font=("Helvetica", 10, "bold"),
+             bg="#1e1e2e", fg="#89b4fa").pack(anchor="w")
+    
+    combo_origen = ttk.Combobox(panel_izq,
+                                values=sorted(CIUDADES),
+                                state="readonly",
+                                font=("Helvetica", 10))
+    combo_origen.set("Madrid")
+    combo_origen.pack(fill=tk.X, pady=(4, 12))
+    
+    # Destino
+    tk.Label(panel_izq, text="Ciudad de Destino",
+             font=("Helvetica", 10, "bold"),
+             bg="#1e1e2e", fg="#a6e3a1").pack(anchor="w")
+    
+    combo_destino = ttk.Combobox(panel_izq,
+                                 values=sorted(CIUDADES),
+                                 state="readonly",
+                                 font=("Helvetica", 10))
+    
+    combo_destino.set("Berlin")
+    combo_destino.pack(fill=tk.X, pady=(4, 18))
+    
+    # Boton calcular
+    tk.Button(panel_izq,
+              text="Calcular Ruta Optima",
+              font=("Helvetica", 11, "bold"),
+              bg="#89b4fa", fg="#1e1e2e",
+              activebackground="#74c7ec",
+              relief=tk.FLAT, cursor="hand2",
+              command=calcular_ruta).pack(fill=tk.X, pady=(0, 18))
+    
+    # Cuadro de resultado
+    tk.Label(panel_izq, text="Resultado",
+             font=("Helvetica", 10, "bold"),
+             bg="#1e1e2e", fg="#cdd6f4").pack(anchor="w")
+    texto_resultado = tk.Text(panel_izq,
+                              height=14,
+                              font=("Courier", 9),
+                              bg="#313244", fg="#cdd6f4",
+                              relief=tk.FLAT,
+                              wrap=tk.WORD,
+                              state=tk.DISABLED,
+                              padx=8, pady=8)
+    texto_resultado.pack(fill=tk.BOTH, expand=True)
+
+    # ---- Panel derecho (grafico) ----
+    panel_der = tk.Frame(ventana, bg="#181825")
+    panel_der.pack(side=tk.LEFT, fill=tk.BOTH, expand=True,
+                   padx=(0, 16), pady=16)
+
+    fig, ax = plt.subplots(figsize=(9, 7))
+    lienzo = FigureCanvasTkAgg(fig, master=panel_der)
+    lienzo.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+
+    # Dibujar el grafo inicial (sin ruta)
+    dibujar_grafo(ruta_optima=None)
+
+    ventana.mainloop()
+
+
+
+# Punto de entrada
+if __name__ == "__main__":
+    crear_ventana()
