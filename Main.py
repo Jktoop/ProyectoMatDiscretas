@@ -4,3 +4,96 @@ import matplotlib.pyplot as plt
 import matplotlib.lines as mlines
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
+from ciudades import CIUDADES, CONEXIONES, POSICIONES
+from dijkstra import construir_grafo, dijkstra, obtener_ruta
+
+# variables globales de la interfaz
+combo_origen  = None
+combo_destino = None
+texto_resultado = None
+lienzo = None
+fig = None
+ax = None
+grafo = None   # diccionario con la estructura del grafo
+
+
+# dibujar el grafo usando matplotlib directamente 
+def dibujar_grafo(ruta_optima=None):
+
+    ax.clear()
+    ax.set_facecolor("#181825")
+    fig.patch.set_facecolor("#181825")
+
+    # Construir un set con las aristas de la ruta para busqueda rapida
+    aristas_ruta = set()
+    if ruta_optima and len(ruta_optima) > 1:
+        for i in range(len(ruta_optima) - 1):
+            a = ruta_optima[i]
+            b = ruta_optima[i + 1]
+            aristas_ruta.add((a, b))
+            aristas_ruta.add((b, a))
+
+    # dibujar todas las aristas
+    for origen, destino, peso in CONEXIONES:
+        x1, y1 = POSICIONES[origen]
+        x2, y2 = POSICIONES[destino]
+
+        if (origen, destino) in aristas_ruta:
+            # arista de la ruta optima roja y gruesa
+            ax.plot([x1, x2], [y1, y2],
+                    color="#f38ba8", linewidth=3.0, zorder=1)
+            # mostrar el peso sobre la arista
+            mx, my = (x1 + x2) / 2, (y1 + y2) / 2
+            ax.text(mx, my, f"{peso} km",
+                    fontsize=6.5, color="#f9e2af", ha="center", va="center",
+                    bbox=dict(boxstyle="round,pad=0.2", fc="#313244", ec="none", alpha=0.85),
+                    zorder=3)
+        else:
+            # arista normal gris
+            ax.plot([x1, x2], [y1, y2],
+                    color="#45475a", linewidth=1.0, zorder=1)
+
+    # dibujar los nodos
+    origen_sel  = combo_origen.get()
+    destino_sel = combo_destino.get()
+
+    for ciudad in CIUDADES:
+        x, y = POSICIONES[ciudad]
+
+        if ciudad == origen_sel:
+            color = "#a6e3a1"   # verde = origen
+            tamanio = 120
+        elif ciudad == destino_sel:
+            color = "#f9e2af"   # amarillo = destino
+            tamanio = 120
+        elif ruta_optima and ciudad in ruta_optima:
+            color = "#f38ba8"   # rosa = en la ruta
+            tamanio = 100
+        else:
+            color = "#89b4fa"   # azul = resto
+            tamanio = 80
+
+        ax.scatter(x, y, s=tamanio, color=color, zorder=4)
+        ax.text(x, y + 0.5, ciudad,
+                fontsize=7.5, color="#cdd6f4", ha="center", va="bottom",
+                fontweight="bold", zorder=5)
+
+    # leyenda
+    leyenda = [
+        mlines.Line2D([], [], color="#a6e3a1", marker="o", linestyle="None",
+                      markersize=7, label="Origen"),
+        mlines.Line2D([], [], color="#f9e2af", marker="o", linestyle="None",
+                      markersize=7, label="Destino"),
+        mlines.Line2D([], [], color="#f38ba8", linewidth=2.5,
+                      label="Ruta optima"),
+        mlines.Line2D([], [], color="#45475a", linewidth=1.0,
+                      label="Otras conexiones"),
+    ]
+    ax.legend(handles=leyenda, loc="lower left",
+              facecolor="#313244", edgecolor="none",
+              labelcolor="#cdd6f4", fontsize=8)
+
+    ax.set_title("Red de ciudades europeas", color="#cdd6f4", fontsize=11, pad=10)
+    ax.axis("off")
+    fig.tight_layout()
+    lienzo.draw()
