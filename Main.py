@@ -89,7 +89,7 @@ def dibujar_grafo(ruta_optima=None):
         mlines.Line2D([], [], color="#45475a", linewidth=1.0,
                       label="Otras conexiones"),
     ]
-    ax.legend(handles=leyenda, loc="lower left",
+    ax.legend(handles=leyenda, loc="upper left",
               facecolor="#313244", edgecolor="none",
               labelcolor="#cdd6f4", fontsize=8)
 
